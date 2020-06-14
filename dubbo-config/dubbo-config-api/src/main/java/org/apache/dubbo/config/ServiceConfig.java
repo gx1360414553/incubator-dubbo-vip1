@@ -562,7 +562,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                         Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
                         DelegateProviderMetaDataInvoker wrapperInvoker = new DelegateProviderMetaDataInvoker(invoker, this);
                         // Dubbo是协议，注册是协议，配置覆盖也是协议
-                        Exporter<?> exporter = protocol.export(wrapperInvoker); // 入口，服务注册以及服务暴露
+                        Exporter<?> exporter = protocol.export(wrapperInvoker); // 入口，服务注册以及服务暴露   protocol有ProtocolListenerWrapper、ProtocolFilterWrapper先执行rapper类
                         exporters.add(exporter);
                     }
                 } else {
