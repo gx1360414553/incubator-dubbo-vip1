@@ -117,10 +117,10 @@ public class Environment {
     public CompositeConfiguration getConfiguration(String prefix, String id) {
         CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
         // Config center has the highest priority
-        compositeConfiguration.addConfiguration(this.getSystemConfig(prefix, id));   // -D
-        compositeConfiguration.addConfiguration(this.getAppExternalConfig(prefix, id));
-        compositeConfiguration.addConfiguration(this.getExternalConfig(prefix, id));
-        compositeConfiguration.addConfiguration(this.getPropertiesConfig(prefix, id)); //
+        compositeConfiguration.addConfiguration(this.getSystemConfig(prefix, id));   // -D 系统配置项
+        compositeConfiguration.addConfiguration(this.getAppExternalConfig(prefix, id));//app全局配置
+        compositeConfiguration.addConfiguration(this.getExternalConfig(prefix, id));//配置中心全局的配置项
+        compositeConfiguration.addConfiguration(this.getPropertiesConfig(prefix, id)); //dubbo.properties
         return compositeConfiguration;
     }
 

@@ -255,6 +255,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
                     Map<String, String> map = new HashMap<String, String>();
                     appendParameters(map, application);
                     appendParameters(map, config);
+                    //注册中心path写死了
                     map.put("path", RegistryService.class.getName());
                     appendRuntimeParameters(map);
                     if (!map.containsKey("protocol")) {

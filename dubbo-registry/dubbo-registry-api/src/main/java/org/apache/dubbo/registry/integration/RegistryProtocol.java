@@ -157,7 +157,7 @@ public class RegistryProtocol implements Protocol {
 
     public void register(URL registryUrl, URL registeredProviderUrl) {
         Registry registry = registryFactory.getRegistry(registryUrl);
-        registry.register(registeredProviderUrl);
+        registry.register(registeredProviderUrl); //调用failBack
     }
 
     public void unregister(URL registryUrl, URL registeredProviderUrl) {
@@ -175,13 +175,14 @@ public class RegistryProtocol implements Protocol {
         // FIXME When the provider subscribes, it will affect the scene : a certain JVM exposes the service and call
         //  the same service. Because the subscribed is cached key with the name of the service, it causes the
         //  subscription information to cover.
+        //注册监听器 监听配置中心节点路径/dubbo/config/应用名/configurators 中信息的修改  针对新版 2.7
         final URL overrideSubscribeUrl = getSubscribedOverrideUrl(providerUrl);
         final OverrideListener overrideSubscribeListener = new OverrideListener(overrideSubscribeUrl, originInvoker);
         overrideListeners.put(overrideSubscribeUrl, overrideSubscribeListener);
 
         providerUrl = overrideUrlWithConfig(providerUrl, overrideSubscribeListener);
         //export invoker
-        final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker, providerUrl); // 服务暴露
+        final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker, providerUrl); // 服务本地暴露 启动tomcat容器
 
         // url to registry
         final Registry registry = getRegistry(originInvoker);
@@ -196,7 +197,7 @@ public class RegistryProtocol implements Protocol {
         }
 
         // Deprecated! Subscribe to override rules in 2.6.x or before.
-        // 监听的是该服务configurators下路径的变化
+        // 监听的是该服务configurators下路径的变化  /dubbo/应用名/configurators
         registry.subscribe(overrideSubscribeUrl, overrideSubscribeListener);
 
         exporter.setRegisterUrl(registeredProviderUrl);
@@ -301,6 +302,7 @@ public class RegistryProtocol implements Protocol {
     private URL getRegisteredProviderUrl(final URL providerUrl, final URL registryUrl) {
         //The address you see at the registry
         if (!registryUrl.getParameter(SIMPLE_PROVIDER_CONFIG_KEY, false)) {
+            //移除url中一些非必要的属性  2.7比之前新加的  简化url
             return providerUrl.removeParameters(getFilteredKeys(providerUrl)).removeParameters(
                     MONITOR_KEY, BIND_IP_KEY, BIND_PORT_KEY, QOS_ENABLE, QOS_PORT, ACCEPT_FOREIGN_IP, VALIDATION_KEY,
                     INTERFACES);
@@ -506,7 +508,7 @@ public class RegistryProtocol implements Protocol {
             }
 
             this.configurators = Configurator.toConfigurators(classifyUrls(matchedUrls, UrlUtils::isConfigurator))
-                    .orElse(configurators);
+                    .orElse(configurators); //配置重写的信息
 
             doOverrideIfNecessary();
         }
@@ -534,7 +536,7 @@ public class RegistryProtocol implements Protocol {
                     .getConfigurators(), newUrl);
             newUrl = getConfigedInvokerUrl(providerConfigurationListener.getConfigurators(), newUrl);
             if (!currentUrl.equals(newUrl)) {
-                RegistryProtocol.this.reExport(originInvoker, newUrl);
+                RegistryProtocol.this.reExport(originInvoker, newUrl);//重新导出服务
                 logger.info("exported provider url changed, origin url: " + originUrl +
                         ", old export url: " + currentUrl + ", new export url: " + newUrl);
             }

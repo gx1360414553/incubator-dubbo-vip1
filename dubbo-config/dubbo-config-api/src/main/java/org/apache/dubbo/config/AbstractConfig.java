@@ -490,6 +490,7 @@ public abstract class AbstractConfig implements Serializable {
                     String key;
                     Parameter parameter = method.getAnnotation(Parameter.class);
                     if (parameter != null && parameter.key().length() > 0 && parameter.useKeyAsProperty()) {
+                        //使用@Parameter上设置的key
                         key = parameter.key();
                     } else {
                         key = prop;
@@ -538,6 +539,23 @@ public abstract class AbstractConfig implements Serializable {
     /**
      * TODO: Currently, only support overriding of properties explicitly defined in Config class, doesn't support
      * overriding of customized parameters stored in 'parameters'.
+     * 1.外部配置 timeout？
+     * 配置存在的地方
+     * 1.xml/注解 bean初始化完成时的值
+     * 2.-D 系统配置
+     * 3.配置中心-全局配置
+     * 4.配置中心-app全局配置
+     * 5.dubbo.properties
+     *
+     * 定义配置的优先级？
+     * 1.子节点覆盖父节点的
+     * 2.子节点去父节点的配置信息
+     *
+     * <dubbo:provider timeout="1000">
+     *         <dubbo:service interface="xxxxxxxxx" timeout="123333" ref="xxxxx"></dubbo:service>
+     *     </dubbo:provider>
+     *
+     * 取出外部配置根据优先级设置属性
      */
     public void refresh() {
         try {

@@ -482,7 +482,7 @@ public class ExtensionLoader<T> {
                     instance = cachedAdaptiveInstance.get();
                     if (instance == null) {
                         try {
-                            instance = createAdaptiveExtension();
+                            instance = createAdaptiveExtension(); //自适用，代理类（实现了接口） // 可以从URL里面取值
                             cachedAdaptiveInstance.set(instance);
                         } catch (Throwable t) {
                             createAdaptiveInstanceError = t;
@@ -715,7 +715,7 @@ public class ExtensionLoader<T> {
                     type + ", class line: " + clazz.getName() + "), class "
                     + clazz.getName() + "is not subtype of interface.");
         }
-        // 实现类上是否有Adaptive注解，这段代码的意思就是一个接口的实现类中只有一个Adaptive
+        // 实现类上是否有Adaptive注解，这段代码的意思就是一个接口的实现类中只有一个Adaptive  @Adaptive就是表明是自定义的代理类
         if (clazz.isAnnotationPresent(Adaptive.class)) {
             if (cachedAdaptiveClass == null) {
                 cachedAdaptiveClass = clazz;
@@ -815,6 +815,7 @@ public class ExtensionLoader<T> {
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
         }
+        //没有自定义代理类就创建一个代理类
         return cachedAdaptiveClass = createAdaptiveExtensionClass();
     }
 

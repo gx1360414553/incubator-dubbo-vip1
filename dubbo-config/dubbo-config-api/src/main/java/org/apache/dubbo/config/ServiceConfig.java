@@ -534,6 +534,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
             // export to local if the config is not remote (export to remote only when config is remote)
             if (!Constants.SCOPE_REMOTE.equalsIgnoreCase(scope)) {
+                //暴露到本地  在jvm中调用
                 exportLocal(url);
             }
             // export to remote if the config is not local (export to local only when config is local)

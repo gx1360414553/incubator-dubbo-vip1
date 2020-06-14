@@ -80,19 +80,24 @@ public class ConfigCenterConfig extends AbstractConfig {
 
         if (isValid()) {
             DynamicConfiguration dynamicConfiguration = startDynamicConfiguration(toConfigUrl());
+            //获取全局配置
             String configContent = dynamicConfiguration.getConfig(configFile, group);
 
             String appGroup = getApplicationName();
             String appConfigContent = null;
             if (StringUtils.isNotEmpty(appGroup)) {
+                //获取应用的配置
                 appConfigContent = dynamicConfiguration.getConfig
                         (StringUtils.isNotEmpty(appConfigFile) ? appConfigFile : configFile,
                          appGroup
                         );
             }
             try {
+                //优先级设置 仅次于-D
                 Environment.getInstance().setConfigCenterFirst(highestPriority);
+                //更新配置
                 Environment.getInstance().updateExternalConfigurationMap(parseProperties(configContent));
+                //更新配置
                 Environment.getInstance().updateAppExternalConfigurationMap(parseProperties(appConfigContent));
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to parse configurations from Config Center.", e);

@@ -97,6 +97,7 @@ public class ConfigCenterBean extends ConfigCenterConfig implements Initializing
         }
 
         if (!fromSpring) {
+            //初始化配置中心的配置
             this.init();
         }
     }

@@ -17,6 +17,7 @@ public interface Car {
 
     public void getColor();
 
+    //    @Adaptive("car")
     @Adaptive
     public void getColorForUrl(URL url);
 }
