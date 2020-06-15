@@ -23,6 +23,7 @@ import org.apache.dubbo.common.extension.SPI;
 /**
  * Protocol. (API/SPI, Singleton, ThreadSafe)
  */
+//根据url协议指定实现类    register://   registerProtocol; http://   httpProtocol
 @SPI("dubbo")
 public interface Protocol {
 

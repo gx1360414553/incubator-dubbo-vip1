@@ -403,7 +403,9 @@ public abstract class AbstractRegistry implements Registry {
             String category = entry.getKey();
             List<URL> categoryList = entry.getValue();
             categoryNotified.put(category, categoryList);
+            //缓存配置到本地
             saveProperties(url);
+            //进行通知
             listener.notify(categoryList);
         }
     }
@@ -431,6 +433,7 @@ public abstract class AbstractRegistry implements Registry {
             if (syncSaveFile) {
                 doSaveProperties(version);
             } else {
+                //异步缓存
                 registryCacheExecutor.execute(new SaveProperties(version));
             }
         } catch (Throwable t) {

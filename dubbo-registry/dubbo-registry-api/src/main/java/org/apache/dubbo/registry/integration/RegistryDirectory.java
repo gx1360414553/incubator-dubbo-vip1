@@ -147,8 +147,8 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
 
     public void subscribe(URL url) {
         setConsumerUrl(url);
-        consumerConfigurationListener.addNotifyListener(this);
-        serviceConfigurationListener = new ReferenceConfigurationListener(this, url);
+        consumerConfigurationListener.addNotifyListener(this); //监听应用的配置
+        serviceConfigurationListener = new ReferenceConfigurationListener(this, url);//监听服务的配置
         registry.subscribe(url, this);
     }
 
@@ -185,25 +185,28 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
 
         System.out.println(categoryUrls);
 
-        if (categoryUrls.get(0).getProtocol().equals("http")) {
-            System.out.println("....");
-        }
+//        if (categoryUrls.get(0).getProtocol().equals("http")) {
+//            System.out.println("....");
+//        }
 
         /**
          * TODO Try to refactor the processing of these three type of urls using Collectors.groupBy()?
          */
+        //初始化configurators
         this.configurators = Configurator.toConfigurators(classifyUrls(categoryUrls, UrlUtils::isConfigurator))
                 .orElse(configurators);
-
+        //初始化路由链
         toRouters(classifyUrls(categoryUrls, UrlUtils::isRoute)).ifPresent(this::addRouters);
 
-        // providers
+        // 初始化providers
         refreshOverrideAndInvoker(classifyUrls(categoryUrls, UrlUtils::isProvider));
     }
 
     private void refreshOverrideAndInvoker(List<URL> urls) {
         // mock zookeeper://xxx?mock=return null
+        //重写更新配置
         overrideDirectoryUrl();
+        //刷新Invoker
         refreshInvoker(urls);
     }
 
@@ -258,7 +261,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
             List<Invoker<T>> newInvokers = Collections.unmodifiableList(new ArrayList<>(newUrlInvokerMap.values()));
             // pre-route and build cache, notice that route cache should build on original Invoker list.
             // toMergeMethodInvokerMap() will wrap some invokers having different groups, those wrapped invokers not should be routed.
-            routerChain.setInvokers(newInvokers);
+            routerChain.setInvokers(newInvokers);//路由链进行过滤
             this.invokers = multiGroup ? toMergeInvokerList(newInvokers) : newInvokers;
             this.urlInvokerMap = newUrlInvokerMap;
 
@@ -382,7 +385,8 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
                         enabled = url.getParameter(Constants.ENABLED_KEY, true);
                     }
                     if (enabled) {
-                        invoker = new InvokerDelegate<T>(protocol.refer(serviceType, url), url, providerUrl);
+                        //把一个provider服务封装成invoker
+                        invoker = new InvokerDelegate<T>(protocol.refer(serviceType, url), url, providerUrl); //http协议就走httpprotocol
                     }
                 } catch (Throwable t) {
                     logger.error("Failed to refer invoker for interface:" + serviceType + ",url:(" + url + ")" + t.getMessage(), t);

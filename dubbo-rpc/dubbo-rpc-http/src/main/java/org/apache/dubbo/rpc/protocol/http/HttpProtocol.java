@@ -77,7 +77,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
         String addr = getAddr(url);
         HttpServer server = serverMap.get(addr);
         if (server == null) {
-            //创建容器
+            //创建容器   使用InternalHandler处理请求
             server = httpBinder.bind(url, new InternalHandler());
             serverMap.put(addr, server);
         }
@@ -134,6 +134,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
         httpProxyFactoryBean.setServiceUrl(key);
         httpProxyFactoryBean.setServiceInterface(serviceType);
         String client = url.getParameter(Constants.CLIENT_KEY);
+        //根据服务配置的client来生成HttpClient   消费者的配置会覆盖提供者的配置
         if (StringUtils.isEmpty(client) || "simple".equals(client)) {
             SimpleHttpInvokerRequestExecutor httpInvokerRequestExecutor = new SimpleHttpInvokerRequestExecutor() {
                 @Override

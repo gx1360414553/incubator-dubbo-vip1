@@ -130,7 +130,9 @@ public abstract class ListenableRouter extends AbstractRouter implements Configu
             return;
         }
         String routerKey = ruleKey + Constants.ROUTERS_SUFFIX;
+        //对service和服务进行router监听
         configuration.addListener(routerKey, this);
+        //从注册中心获取router规则
         String rule = configuration.getConfig(routerKey);
         if (rule != null) {
             this.process(new ConfigChangeEvent(routerKey, rule));

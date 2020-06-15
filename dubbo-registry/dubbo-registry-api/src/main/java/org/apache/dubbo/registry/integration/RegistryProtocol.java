@@ -167,7 +167,7 @@ public class RegistryProtocol implements Protocol {
 
     @Override
     public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcException {
-        URL registryUrl = getRegistryUrl(originInvoker);
+        URL registryUrl = getRegistryUrl(originInvoker);//导出服务
         // url to export locally
         URL providerUrl = getProviderUrl(originInvoker);
 
@@ -377,10 +377,10 @@ public class RegistryProtocol implements Protocol {
         Map<String, String> parameters = new HashMap<String, String>(directory.getUrl().getParameters());
         URL subscribeUrl = new URL(CONSUMER_PROTOCOL, parameters.remove(REGISTER_IP_KEY), 0, type.getName(), parameters);
         if (!ANY_VALUE.equals(url.getServiceInterface()) && url.getParameter(REGISTER_KEY, true)) {
-            registry.register(getRegisteredConsumerUrl(subscribeUrl, url));
+            registry.register(getRegisteredConsumerUrl(subscribeUrl, url)); //调用FailbackRegistry 注册服务消费者信息到注册中心
         }
-        directory.buildRouterChain(subscribeUrl);  // 2.7绑定各个监听器，包括动态配置中心，条件路由，标签路由，黑白名单路由
-        // 这里会监听老目录
+        directory.buildRouterChain(subscribeUrl);  // 2.7绑定app和service条件路由的监听器，包括动态配置中心，条件路由，黑白名单    标签路由没有绑定监听器
+        // 这里监听以前版本的老目录兼容老版本的管理平台
         directory.subscribe(subscribeUrl.addParameter(CATEGORY_KEY,
                 PROVIDERS_CATEGORY + "," + CONFIGURATORS_CATEGORY + "," + ROUTERS_CATEGORY));
 

@@ -37,8 +37,8 @@ public final class Version {
 
     // Dubbo RPC protocol version, for compatibility, it must not be between 2.0.10 ~ 2.6.2
     public static final String DEFAULT_DUBBO_PROTOCOL_VERSION = "2.0.2";
-    // Dubbo implementation version, usually is jar version.
-    private static final String VERSION = getVersion(Version.class, "2.7.0");
+    // Dubbo implementation version, usually is jar version. 默认使用jar包版本
+    private static final String VERSION = getVersion(Version.class, "2.6.2");
 
     /**
      * For protocol compatibility purpose.
