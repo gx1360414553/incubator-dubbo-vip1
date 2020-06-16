@@ -71,6 +71,7 @@ public class ExceptionFilter implements Filter {
 
     @Override
     public Result onResponse(Result result, Invoker<?> invoker, Invocation invocation) {
+        //处理异常结果
         if (result.hasException() && GenericService.class != invoker.getInterface()) {
             try {
                 Throwable exception = result.getException();

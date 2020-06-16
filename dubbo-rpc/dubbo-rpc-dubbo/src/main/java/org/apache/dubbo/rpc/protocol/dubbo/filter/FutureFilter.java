@@ -51,6 +51,7 @@ public class FutureFilter implements Filter {
 
     @Override
     public Result onResponse(Result result, Invoker<?> invoker, Invocation invocation) {
+        //响应结果处理
         if (result instanceof AsyncRpcResult) {
             AsyncRpcResult asyncResult = (AsyncRpcResult) result;
             asyncResult.thenApplyWithContext(r -> {
@@ -66,8 +67,10 @@ public class FutureFilter implements Filter {
 
     private void syncCallback(final Invoker<?> invoker, final Invocation invocation, final Result result) {
         if (result.hasException()) {
+            //当抛异常做什么处理
             fireThrowCallback(invoker, invocation, result.getException());
         } else {
+            //当有返回值做什么处理
             fireReturnCallback(invoker, invocation, result.getValue());
         }
     }

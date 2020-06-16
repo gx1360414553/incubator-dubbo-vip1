@@ -53,7 +53,7 @@ public class InvokerInvocationHandler implements InvocationHandler {
         if ("equals".equals(methodName) && parameterTypes.length == 1) {
             return invoker.equals(args[0]);
         }
-
+        // invoker是MockClusterInvoker
         return invoker.invoke(createInvocation(method, args)).recreate();
     }
 

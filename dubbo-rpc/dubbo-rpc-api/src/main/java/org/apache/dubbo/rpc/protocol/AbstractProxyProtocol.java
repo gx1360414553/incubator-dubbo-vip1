@@ -89,11 +89,12 @@ public abstract class AbstractProxyProtocol extends AbstractProtocol {
 
     @Override
     public <T> Invoker<T> refer(final Class<T> type, final URL url) throws RpcException {
-        final Invoker<T> target = proxyFactory.getInvoker(doRefer(type, url), type, url);
+        final Invoker<T> target = proxyFactory.getInvoker(doRefer(type, url), type, url); // httpClient调用者
         Invoker<T> invoker = new AbstractInvoker<T>(type, url) {
             @Override
             protected Result doInvoke(Invocation invocation) throws Throwable {
                 try {
+                    //远程调用 httpClient
                     Result result = target.invoke(invocation);
                     Throwable e = result.getException();
                     if (e != null) {
