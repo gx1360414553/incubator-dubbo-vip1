@@ -141,8 +141,8 @@ public class HttpProtocol extends AbstractProxyProtocol {
                 protected void prepareConnection(HttpURLConnection con,
                                                  int contentLength) throws IOException {
                     super.prepareConnection(con, contentLength);
-                    con.setReadTimeout(url.getParameter(Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT));
-                    con.setConnectTimeout(url.getParameter(Constants.CONNECT_TIMEOUT_KEY, Constants.DEFAULT_CONNECT_TIMEOUT));
+                    con.setReadTimeout(url.getParameter(Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT));//设置http读超时时间
+                    con.setConnectTimeout(url.getParameter(Constants.CONNECT_TIMEOUT_KEY, Constants.DEFAULT_CONNECT_TIMEOUT));//设置http连接时时间
                 }
             };
             httpProxyFactoryBean.setHttpInvokerRequestExecutor(httpInvokerRequestExecutor);
@@ -154,7 +154,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
         } else {
             throw new IllegalStateException("Unsupported http protocol client " + client + ", only supported: simple, commons");
         }
-        httpProxyFactoryBean.afterPropertiesSet();
+        httpProxyFactoryBean.afterPropertiesSet();//jdk动态代理生成服务的代理类
         return (T) httpProxyFactoryBean.getObject();
     }
 
@@ -182,7 +182,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
         public void handle(HttpServletRequest request, HttpServletResponse response)
                 throws IOException, ServletException {
             String uri = request.getRequestURI();
-            HttpInvokerServiceExporter skeleton = skeletonMap.get(uri);
+            HttpInvokerServiceExporter skeleton = skeletonMap.get(uri);//根据url获得对应的 invoker
             if (!request.getMethod().equalsIgnoreCase("POST")) {
                 response.setStatus(500);
             } else {

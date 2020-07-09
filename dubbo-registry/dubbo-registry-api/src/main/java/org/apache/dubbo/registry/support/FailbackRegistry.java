@@ -228,7 +228,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
         removeFailedUnregistered(url);
         try {
             // Sending a registration request to the server side
-            doRegister(url); //调用zookeeper的实现
+            doRegister(url); //调用zookeeper的实现实现服务注册
         } catch (Exception e) {
             Throwable t = e;
 
@@ -352,7 +352,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
             throw new IllegalArgumentException("notify listener == null");
         }
         try {
-            doNotify(url, listener, urls);
+            doNotify(url, listener, urls); //监听器执行通知
         } catch (Exception t) {
             // Record a failed registration request to a failed list, retry regularly
             addFailedNotified(url, listener, urls);

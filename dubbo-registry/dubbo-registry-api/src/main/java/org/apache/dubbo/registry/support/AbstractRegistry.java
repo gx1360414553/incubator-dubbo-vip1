@@ -196,7 +196,7 @@ public abstract class AbstractRegistry implements Registry {
             InputStream in = null;
             try {
                 in = new FileInputStream(file);
-                properties.load(in);
+                properties.load(in); //从本地的缓存中加载服务的信息
                 if (logger.isInfoEnabled()) {
                     logger.info("Load registry cache file " + file + ", data: " + properties);
                 }
@@ -359,7 +359,7 @@ public abstract class AbstractRegistry implements Registry {
             if (listeners != null) {
                 for (NotifyListener listener : listeners) {
                     try {
-                        notify(url, listener, filterEmpty(url, urls));
+                        notify(url, listener, filterEmpty(url, urls)); //通知
                     } catch (Throwable t) {
                         logger.error("Failed to notify registry event, urls: " + urls + ", cause: " + t.getMessage(), t);
                     }

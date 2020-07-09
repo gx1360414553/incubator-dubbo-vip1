@@ -172,9 +172,9 @@ public class ZookeeperRegistry extends FailbackRegistry {
                         listeners.putIfAbsent(listener, (parentPath, currentChilds) -> ZookeeperRegistry.this.notify(url, listener, toUrlsWithEmpty(url, parentPath, currentChilds)));
                         zkListener = listeners.get(listener);
                     }
-                    zkClient.create(path, false);
+                    zkClient.create(path, false); //创建configurators的节点
                     //取出节点信息
-                    List<String> children = zkClient.addChildListener(path, zkListener);
+                    List<String> children = zkClient.addChildListener(path, zkListener);//给这三个节点 "/dubbo/com.luban.dubbo_vip_xml_demo.api.HelloService/providers" "/dubbo/com.luban.dubbo_vip_xml_demo.api.HelloService/configurators" "/dubbo/com.luban.dubbo_vip_xml_demo.api.HelloService/routers"添加监听器
                     if (children != null) {
                         urls.addAll(toUrlsWithEmpty(url, path, children));
                     }

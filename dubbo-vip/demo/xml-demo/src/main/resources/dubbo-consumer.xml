@@ -11,7 +11,7 @@
     <!--<dubbo:registry address="redis://127.0.0.1:6379" />-->
 
     <!--关闭某个服务的启动时检查 (没有提供者时报错)-->
-    <dubbo:reference interface="com.luban.dubbo_vip_xml_demo.api.HelloService" check="false" id="helloService">
+    <dubbo:reference interface="com.luban.dubbo_vip_xml_demo.api.HelloService" check="false" id="helloService" mock="return null">
         <dubbo:method name="replyHello"/>
     </dubbo:reference>
 

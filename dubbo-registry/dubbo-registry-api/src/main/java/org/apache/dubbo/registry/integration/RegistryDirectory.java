@@ -147,7 +147,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
 
     public void subscribe(URL url) {
         setConsumerUrl(url);
-        consumerConfigurationListener.addNotifyListener(this); //监听应用的配置
+        consumerConfigurationListener.addNotifyListener(this); //监听应用的配置 把该目录放进注册目录进行监听
         serviceConfigurationListener = new ReferenceConfigurationListener(this, url);//监听服务的配置
         registry.subscribe(url, this);
     }
@@ -185,9 +185,9 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
 
         System.out.println(categoryUrls);
 
-//        if (categoryUrls.get(0).getProtocol().equals("http")) {
-//            System.out.println("....");
-//        }
+        if (categoryUrls.get(0).getProtocol().equals("http")) {
+            System.out.println("....");
+        }
 
         /**
          * TODO Try to refactor the processing of these three type of urls using Collectors.groupBy()?
@@ -266,7 +266,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
             this.urlInvokerMap = newUrlInvokerMap;
 
             try {
-                destroyUnusedInvokers(oldUrlInvokerMap, newUrlInvokerMap); // Close the unused Invoker
+                destroyUnusedInvokers(oldUrlInvokerMap, newUrlInvokerMap); // Close the unused Invoker 关闭无用的Invoker
             } catch (Exception e) {
                 logger.warn("destroyUnusedInvokers error. ", e);
             }
@@ -628,10 +628,10 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
         this.overrideDirectoryUrl = directoryUrl;
         List<Configurator> localConfigurators = this.configurators; // local reference
         doOverrideUrl(localConfigurators);
-        List<Configurator> localAppDynamicConfigurators = consumerConfigurationListener.getConfigurators(); // local reference
+        List<Configurator> localAppDynamicConfigurators = consumerConfigurationListener.getConfigurators(); // local reference 消费者配置监听器
         doOverrideUrl(localAppDynamicConfigurators);
         if (serviceConfigurationListener != null) {
-            List<Configurator> localDynamicConfigurators = serviceConfigurationListener.getConfigurators(); // local reference
+            List<Configurator> localDynamicConfigurators = serviceConfigurationListener.getConfigurators(); // local reference  服务配置监听器
             doOverrideUrl(localDynamicConfigurators);
         }
     }

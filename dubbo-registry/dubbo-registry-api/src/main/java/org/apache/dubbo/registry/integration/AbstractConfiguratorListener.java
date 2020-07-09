@@ -49,6 +49,7 @@ public abstract class AbstractConfiguratorListener implements ConfigurationListe
 
     @Override
     public void process(ConfigChangeEvent event) {
+        //配置修改事件触发通知
         if (logger.isInfoEnabled()) {
             logger.info("Notification of overriding rule, change type is: " + event.getChangeType() +
                     ", raw config content is:\n " + event.getValue());

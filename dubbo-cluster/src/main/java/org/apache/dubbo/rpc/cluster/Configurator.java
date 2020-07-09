@@ -67,6 +67,7 @@ public interface Configurator extends Comparable<Configurator> {
      * @return converted configurator list
      */
     static Optional<List<Configurator>> toConfigurators(List<URL> urls) {
+        //初始化url信息
         if (CollectionUtils.isEmpty(urls)) {
             return Optional.empty();
         }
