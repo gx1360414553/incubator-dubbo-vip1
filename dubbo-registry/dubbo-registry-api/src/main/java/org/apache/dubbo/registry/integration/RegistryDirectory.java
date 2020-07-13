@@ -248,7 +248,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
             if (invokerUrls.isEmpty()) {
                 return;
             }
-            Map<String, Invoker<T>> newUrlInvokerMap = toInvokers(invokerUrls);// Translate url list to Invoker map
+            Map<String, Invoker<T>> newUrlInvokerMap = toInvokers(invokerUrls);// Translate url list to Invoker map 封装调用provider的map
 
             // state change
             // If the calculation is wrong, it is not processed.
@@ -388,6 +388,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
                         //把一个provider服务封装成invoker
                         invoker = new InvokerDelegate<T>(protocol.refer(serviceType, url), url, providerUrl); //http协议就走httpprotocol
                     }
+
                 } catch (Throwable t) {
                     logger.error("Failed to refer invoker for interface:" + serviceType + ",url:(" + url + ")" + t.getMessage(), t);
                 }

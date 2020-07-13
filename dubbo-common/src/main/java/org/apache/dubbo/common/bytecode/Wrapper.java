@@ -115,7 +115,7 @@ public abstract class Wrapper {
 
         Wrapper ret = WRAPPER_MAP.get(c);
         if (ret == null) {
-            ret = makeWrapper(c);
+            ret = makeWrapper(c);//生成代理对象
             WRAPPER_MAP.put(c, ret);
         }
         return ret;
