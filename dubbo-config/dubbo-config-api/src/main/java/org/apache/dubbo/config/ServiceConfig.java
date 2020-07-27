@@ -346,9 +346,9 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         }
 
         if (delay != null && delay > 0) {
-            delayExportExecutor.schedule(this::doExport, delay, TimeUnit.MILLISECONDS);
+            delayExportExecutor.schedule(this::doExport, delay, TimeUnit.MILLISECONDS); //延迟直接导出
         } else {
-            doExport();
+            doExport(); //直接导出
         }
     }
 
@@ -534,7 +534,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
             // export to local if the config is not remote (export to remote only when config is remote)
             if (!Constants.SCOPE_REMOTE.equalsIgnoreCase(scope)) {
-                //暴露到本地  在jvm中调用
+                //暴露到本地  本地导出 在jvm中调用
                 exportLocal(url);
             }
             // export to remote if the config is not local (export to local only when config is local)
@@ -543,7 +543,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                     logger.info("Export dubbo service " + interfaceClass.getName() + " to url " + url);
                 }
                 if (CollectionUtils.isNotEmpty(registryURLs)) {
-                    for (URL registryURL : registryURLs) { // 注册中心的地址
+                    for (URL registryURL : registryURLs) { // 遍历注册中心的地址
                         url = url.addParameterIfAbsent(Constants.DYNAMIC_KEY, registryURL.getParameter(Constants.DYNAMIC_KEY));
                         URL monitorUrl = loadMonitor(registryURL);
                         if (monitorUrl != null) {
@@ -558,11 +558,12 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                         if (StringUtils.isNotEmpty(proxy)) {
                             registryURL = registryURL.addParameter(Constants.PROXY_KEY, proxy);
                         }
-
+                        //生成一个Invoker
                         Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
                         DelegateProviderMetaDataInvoker wrapperInvoker = new DelegateProviderMetaDataInvoker(invoker, this);
                         // Dubbo是协议，注册是协议，配置覆盖也是协议
-                        Exporter<?> exporter = protocol.export(wrapperInvoker); // 入口，服务注册以及服务暴露   protocol有ProtocolListenerWrapper、ProtocolFilterWrapper先执行rapper类
+                        //代理对象的获取会根据wrapperInvoker的getUrl()方法获得url，根据url的protocol获取对应的代理实现类  protocol是registry
+                        Exporter<?> exporter = protocol.export(wrapperInvoker); // 入口，服务注册以及服务暴露   protocol有ProtocolListenerWrapper、ProtocolFilterWrapper先执行wrapper类
                         exporters.add(exporter);
                     }
                 } else {

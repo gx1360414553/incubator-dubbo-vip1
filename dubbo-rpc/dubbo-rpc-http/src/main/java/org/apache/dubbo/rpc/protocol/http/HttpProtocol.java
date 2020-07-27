@@ -82,7 +82,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
             serverMap.put(addr, server);
         }
         final String path = url.getAbsolutePath();
-        skeletonMap.put(path, createExporter(impl, type));
+        skeletonMap.put(path, createExporter(impl, type)); //存储HttpInvokerServiceExporter
 
         final String genericPath = path + "/" + Constants.GENERIC_KEY;
 

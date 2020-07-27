@@ -406,7 +406,7 @@ public abstract class AbstractRegistry implements Registry {
             //缓存配置到本地
             saveProperties(url);
             //进行通知
-            listener.notify(categoryList);
+            listener.notify(categoryList);//listener是RegistryDirectory或者OverrideListener
         }
     }
 

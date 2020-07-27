@@ -100,7 +100,7 @@ public class ExtensionLoader<T> {
 
     private ExtensionLoader(Class<?> type) {
         this.type = type;
-        // 拿出ExtensionFactory接口的所有实现类中的Adaptive实现
+        // 拿出ExtensionFactory接口的所有实现类中的Adaptive实现 objectFactory是ExtensionFactory的代理类
         objectFactory = (type == ExtensionFactory.class ? null : ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getAdaptiveExtension());
     }
 
@@ -525,7 +525,7 @@ public class ExtensionLoader<T> {
 
     @SuppressWarnings("unchecked")
     private T createExtension(String name) {
-        Class<?> clazz = getExtensionClasses().get(name); // 取出对应的实现类
+        Class<?> clazz = getExtensionClasses().get(name); // 根据配置文件的内容取出对应的实现类
         if (clazz == null) {
             throw findException(name);
         }
@@ -536,7 +536,7 @@ public class ExtensionLoader<T> {
                 EXTENSION_INSTANCES.putIfAbsent(clazz, clazz.newInstance());
                 instance = (T) EXTENSION_INSTANCES.get(clazz);
             }
-            injectExtension(instance);
+            injectExtension(instance); //依赖注入
             Set<Class<?>> wrapperClasses = cachedWrapperClasses;
             //包装类类似aop的功能在接口前后加上方法
             if (CollectionUtils.isNotEmpty(wrapperClasses)) {

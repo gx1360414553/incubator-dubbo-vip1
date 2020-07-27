@@ -17,6 +17,7 @@ public class CarDemo {
 
     public static void main(String[] args) {
         ServiceLoader<CarInterface> serviceLoader = ServiceLoader.load(CarInterface.class);
+        //需要遍历使用，不能指定获取某个实现类
         Iterator<CarInterface> iterator = serviceLoader.iterator();
         while (iterator.hasNext()) {
             CarInterface carInterface = iterator.next();

@@ -97,7 +97,7 @@ public abstract class AbstractDirectory<T> implements Directory<T> {
 
     protected void addRouters(List<Router> routers) {
         routers = routers == null ? Collections.emptyList() : routers;
-        routerChain.addRouters(routers);
+        routerChain.addRouters(routers);//把条件路由加入到路由链中
     }
 
     public URL getConsumerUrl() {

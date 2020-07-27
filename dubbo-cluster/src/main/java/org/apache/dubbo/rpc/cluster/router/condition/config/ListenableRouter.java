@@ -49,11 +49,10 @@ public abstract class ListenableRouter extends AbstractRouter implements Configu
     private ConditionRouterRule routerRule;
     private List<ConditionRouter> conditionRouters = new ArrayList<>();
 
-    // rulekey为应用名或服务名
     public ListenableRouter(DynamicConfiguration configuration, URL url, String ruleKey) {
         super(configuration, url);
         this.force = false;
-        this.init(ruleKey);
+        this.init(ruleKey); // rulekey为应用名或服务名
     }
 
     @Override
@@ -130,9 +129,10 @@ public abstract class ListenableRouter extends AbstractRouter implements Configu
             return;
         }
         String routerKey = ruleKey + Constants.ROUTERS_SUFFIX;
+        // configuration是ZookeeperDynamicConfiguration 里面对/dubbo/config 节点做了监听
         //对service和服务进行router监听
-        configuration.addListener(routerKey, this);
-        //从注册中心获取router规则
+        configuration.addListener(routerKey, this);//对/dubbo/config下的service或者服务的router进行监听
+        //从注册中心获取router规则配置（节点内容）
         String rule = configuration.getConfig(routerKey);
         if (rule != null) {
             this.process(new ConfigChangeEvent(routerKey, rule));

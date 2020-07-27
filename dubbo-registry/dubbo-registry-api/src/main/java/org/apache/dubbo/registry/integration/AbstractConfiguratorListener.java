@@ -40,8 +40,8 @@ public abstract class AbstractConfiguratorListener implements ConfigurationListe
 
     protected final void initWith(String key) {
         DynamicConfiguration dynamicConfiguration = DynamicConfiguration.getDynamicConfiguration();
-        dynamicConfiguration.addListener(key, this);
-        String rawConfig = dynamicConfiguration.getConfig(key);
+        dynamicConfiguration.addListener(key, this);//给节点添加监听器
+        String rawConfig = dynamicConfiguration.getConfig(key);//获取节点信息
         if (!StringUtils.isEmpty(rawConfig)) {
             process(new ConfigChangeEvent(key, rawConfig));
         }
@@ -61,7 +61,7 @@ public abstract class AbstractConfiguratorListener implements ConfigurationListe
             try {
                 // parseConfigurators will recognize app/service config automatically.
                 configurators = Configurator.toConfigurators(ConfigParser.parseConfigurators(event.getValue()))
-                        .orElse(configurators);
+                        .orElse(configurators);//更新动态配置
             } catch (Exception e) {
                 logger.error("Failed to parse raw dynamic config and it will not take effect, the raw config is: " +
                         event.getValue(), e);

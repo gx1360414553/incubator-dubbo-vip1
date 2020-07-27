@@ -106,7 +106,7 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
             if (parserContext.getRegistry().containsBeanDefinition(id)) {
                 throw new IllegalStateException("Duplicate spring bean id " + id);
             }
-            parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
+            parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);//把bean注册到spring容器中
             beanDefinition.getPropertyValues().addPropertyValue("id", id);
         }
         if (ProtocolConfig.class.equals(beanClass)) {

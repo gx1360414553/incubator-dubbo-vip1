@@ -76,7 +76,7 @@ public class SpringExtensionFactory implements ExtensionFactory {
 
         for (ApplicationContext context : contexts) {
             if (context.containsBean(name)) {
-                Object bean = context.getBean(name);
+                Object bean = context.getBean(name);//从spring中获取对象
                 if (type.isInstance(bean)) {
                     return (T) bean;
                 }
@@ -91,7 +91,7 @@ public class SpringExtensionFactory implements ExtensionFactory {
 
         for (ApplicationContext context : contexts) {
             try {
-                return context.getBean(type);
+                return context.getBean(type);//从spring中获取对象
             } catch (NoUniqueBeanDefinitionException multiBeanExe) {
                 logger.warn("Find more than 1 spring extensions (beans) of type " + type.getName() + ", will stop auto injection. Please make sure you have specified the concrete parameter type and there's only one extension of that type.");
             } catch (NoSuchBeanDefinitionException noBeanExe) {

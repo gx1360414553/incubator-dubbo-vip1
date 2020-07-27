@@ -50,7 +50,7 @@ public class RouterChain<T> {
         List<RouterFactory> extensionFactories = ExtensionLoader.getExtensionLoader(RouterFactory.class)
                 .getActivateExtension(url, (String[]) null);
 
-        // 这段代码会复制去绑定各个目录的监听器
+        // 这段代码会去绑定应用和服务的路由的监听器 tage路由监听器在这没有添加
         List<Router> routers = extensionFactories.stream()
                 .map(factory -> factory.getRouter(url))
                 .collect(Collectors.toList());

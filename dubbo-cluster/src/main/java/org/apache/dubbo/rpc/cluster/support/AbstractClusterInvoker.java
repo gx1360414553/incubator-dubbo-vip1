@@ -133,7 +133,7 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
             }
         }
 
-        Invoker<T> invoker = doSelect(loadbalance, invocation, invokers, selected);
+        Invoker<T> invoker = doSelect(loadbalance, invocation, invokers, selected);//选择Invoker
 
         if (sticky) {
             stickyInvoker = invoker;

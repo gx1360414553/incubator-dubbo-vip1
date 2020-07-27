@@ -47,7 +47,7 @@ public class ListenerExporterWrapper<T> implements Exporter<T> {
             for (ExporterListener listener : listeners) {
                 if (listener != null) {
                     try {
-                        listener.exported(this);
+                        listener.exported(this);//监听服务导出完做一些动作
                     } catch (RuntimeException t) {
                         logger.error(t.getMessage(), t);
                         exception = t;

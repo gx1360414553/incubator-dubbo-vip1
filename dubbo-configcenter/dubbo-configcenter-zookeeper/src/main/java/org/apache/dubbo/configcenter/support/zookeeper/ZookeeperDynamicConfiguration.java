@@ -131,7 +131,7 @@ public class ZookeeperDynamicConfiguration implements DynamicConfiguration {
         // for example, key=org.apache.dubbo.DemoService.configurators
         else {
             int i = key.lastIndexOf(".");
-            key = key.substring(0, i) + "/" + key.substring(i + 1);
+            key = key.substring(0, i) + "/" + key.substring(i + 1);//key中的点换成斜线
         }
 
         return (String) getInternalProperty(rootPath + "/" + key);

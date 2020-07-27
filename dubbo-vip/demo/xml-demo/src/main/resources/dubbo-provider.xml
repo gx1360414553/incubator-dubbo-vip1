@@ -25,11 +25,14 @@
 
     <!--<dubbo:config-center address="zookeeper://127.0.0.1:2181"/>-->
 
-
+    <!--设置服务属于那个提供者-->
+    <!--<dubbo:provider timeout="3000">-->
+        <!--<dubbo:service interface=""/>-->
+    <!--</dubbo:provider>-->
 
     <!--可以直接使用class属性指定-->
     <!--<dubbo:service interface="com.luban.dubbo_vip_xml_demo.api.HelloService" class="com.luban.dubbo_vip_xml_demo.provider.impl.HelloServiceImpl"/>-->
-    
+
     <bean id="helloService" class="com.luban.dubbo_vip_xml_demo.provider.impl.HelloServiceImpl"/>
 
     <dubbo:service interface="com.luban.dubbo_vip_xml_demo.api.HelloService" ref="helloService"/>

@@ -95,9 +95,9 @@ public class ConfigCenterConfig extends AbstractConfig {
             try {
                 //优先级设置 仅次于-D
                 Environment.getInstance().setConfigCenterFirst(highestPriority);
-                //更新配置
+                //更新全局的配置
                 Environment.getInstance().updateExternalConfigurationMap(parseProperties(configContent));
-                //更新配置
+                //更新服务的配置
                 Environment.getInstance().updateAppExternalConfigurationMap(parseProperties(appConfigContent));
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to parse configurations from Config Center.", e);

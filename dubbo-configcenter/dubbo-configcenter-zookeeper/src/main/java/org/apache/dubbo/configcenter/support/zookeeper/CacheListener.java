@@ -84,7 +84,7 @@ public class CacheListener implements TreeCacheListener {
             }
 
             ConfigChangeEvent configChangeEvent = new ConfigChangeEvent(key, new String(value, StandardCharsets.UTF_8), changeType);
-            Set<ConfigurationListener> listeners = keyListeners.get(key);
+            Set<ConfigurationListener> listeners = keyListeners.get(key); //key是对应的节点 获取节点的监听器
             if (CollectionUtils.isNotEmpty(listeners)) {
                 listeners.forEach(listener -> listener.process(configChangeEvent));
             }

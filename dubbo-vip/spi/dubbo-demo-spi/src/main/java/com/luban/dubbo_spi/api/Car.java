@@ -17,7 +17,7 @@ public interface Car {
 
     public void getColor();
 
-    //    @Adaptive("car")
+    //    @Adaptive("car") 指定获取url中key为car对应值得实现类来执行getColorForUrl方法
     @Adaptive
     public void getColorForUrl(URL url);
 }

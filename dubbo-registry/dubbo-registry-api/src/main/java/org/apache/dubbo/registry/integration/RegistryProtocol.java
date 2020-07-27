@@ -167,9 +167,9 @@ public class RegistryProtocol implements Protocol {
 
     @Override
     public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcException {
-        URL registryUrl = getRegistryUrl(originInvoker);//导出服务
+        URL registryUrl = getRegistryUrl(originInvoker);//Zookeeper的Url
         // url to export locally
-        URL providerUrl = getProviderUrl(originInvoker);
+        URL providerUrl = getProviderUrl(originInvoker);//提供的服务的Url
 
         // Subscribe the override data
         // FIXME When the provider subscribes, it will affect the scene : a certain JVM exposes the service and call
@@ -177,26 +177,26 @@ public class RegistryProtocol implements Protocol {
         //  subscription information to cover.
         //注册监听器 监听配置中心节点路径/dubbo/config/应用名/configurators 中信息的修改  针对新版 2.7
         final URL overrideSubscribeUrl = getSubscribedOverrideUrl(providerUrl);
-        final OverrideListener overrideSubscribeListener = new OverrideListener(overrideSubscribeUrl, originInvoker);
+        final OverrideListener overrideSubscribeListener = new OverrideListener(overrideSubscribeUrl, originInvoker); //配置修改的监听器
         overrideListeners.put(overrideSubscribeUrl, overrideSubscribeListener);// url 监听器 存入Map
 
         providerUrl = overrideUrlWithConfig(providerUrl, overrideSubscribeListener);
         //export invoker
-        final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker, providerUrl); // dubbo服务本地暴露 启动tomcat容器
+        final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker, providerUrl); // 如果是协议的server如果是tomcat就会去启动tomcat容器，jetty就会启动jetty
 
         // url to registry
-        final Registry registry = getRegistry(originInvoker); //创建zookeeper连接
-        final URL registeredProviderUrl = getRegisteredProviderUrl(providerUrl, registryUrl);
+        final Registry registry = getRegistry(originInvoker); //返回ZookeeperRegistry   用来创建zookeeper连接
+        final URL registeredProviderUrl = getRegisteredProviderUrl(providerUrl, registryUrl);//简化URL
         ProviderInvokerWrapper<T> providerInvokerWrapper = ProviderConsumerRegTable.registerProvider(originInvoker,
                 registryUrl, registeredProviderUrl);
         //to judge if we need to delay publish
         boolean register = registeredProviderUrl.getParameter("register", true);
         if (register) {
-            register(registryUrl, registeredProviderUrl); // 服务注册
+            register(registryUrl, registeredProviderUrl); // 服务注册到Zookeeper
             providerInvokerWrapper.setReg(true);
         }
 
-        // Deprecated! Subscribe to override rules in 2.6.x or before.
+        // Deprecated! Subscribe to override rules in 2.6.x or before.过期的
         // 监听的是该服务configurators下路径的变化  /dubbo/应用名/configurators
         registry.subscribe(overrideSubscribeUrl, overrideSubscribeListener);
 
@@ -223,8 +223,8 @@ public class RegistryProtocol implements Protocol {
                 if (exporter == null) {
 
                     final Invoker<?> invokerDelegete = new InvokerDelegate<T>(originInvoker, providerUrl);
-                    exporter = new ExporterChangeableWrapper<T>((Exporter<T>) protocol.export(invokerDelegete), originInvoker);
-                    bounds.put(key, exporter);
+                    exporter = new ExporterChangeableWrapper<T>((Exporter<T>) protocol.export(invokerDelegete), originInvoker); //设置过滤链，启动tomcat
+                    bounds.put(key, exporter);//保存已经暴露过的invoker
                 }
             }
         }
@@ -349,7 +349,7 @@ public class RegistryProtocol implements Protocol {
     @SuppressWarnings("unchecked")
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
         url = url.setProtocol(url.getParameter(REGISTRY_KEY, DEFAULT_REGISTRY)).removeParameter(REGISTRY_KEY);
-        Registry registry = registryFactory.getRegistry(url);//创建zookeeper连接
+        Registry registry = registryFactory.getRegistry(url);//获取zookeeperRegistry 创建zookeeper连接
         if (RegistryService.class.equals(type)) {
             return proxyFactory.getInvoker((T) registry, type, url);
         }
@@ -370,17 +370,17 @@ public class RegistryProtocol implements Protocol {
     }
 
     private <T> Invoker<T> doRefer(Cluster cluster, Registry registry, Class<T> type, URL url) {
-        RegistryDirectory<T> directory = new RegistryDirectory<T>(type, url);
+        RegistryDirectory<T> directory = new RegistryDirectory<T>(type, url);//服务目录
         directory.setRegistry(registry);
         System.out.println();
         directory.setProtocol(protocol);
         // all attributes of REFER_KEY
         Map<String, String> parameters = new HashMap<String, String>(directory.getUrl().getParameters());
-        URL subscribeUrl = new URL(CONSUMER_PROTOCOL, parameters.remove(REGISTER_IP_KEY), 0, type.getName(), parameters);
+        URL subscribeUrl = new URL(CONSUMER_PROTOCOL, parameters.remove(REGISTER_IP_KEY), 0, type.getName(), parameters);//消费者的Url
         if (!ANY_VALUE.equals(url.getServiceInterface()) && url.getParameter(REGISTER_KEY, true)) {
-            registry.register(getRegisteredConsumerUrl(subscribeUrl, url)); //调用FailbackRegistry 注册服务消费者信息到注册中心
+            registry.register(getRegisteredConsumerUrl(subscribeUrl, url)); //调用zookeeperRegistry 注册消费者信息到注册中心
         }
-        directory.buildRouterChain(subscribeUrl);  // 2.7绑定app和service条件路由的监听器，包括动态配置中心，条件路由，黑白名单    标签路由没有绑定监听器
+        directory.buildRouterChain(subscribeUrl);  //路由链 绑定app和service条件路由的监听器，包括动态配置中心，条件路由，黑白名单    标签路由没有绑定监听器
         // 这里监听以前版本的老目录兼容老版本的管理平台
         directory.subscribe(subscribeUrl.addParameter(CATEGORY_KEY,
                 PROVIDERS_CATEGORY + "," + CONFIGURATORS_CATEGORY + "," + ROUTERS_CATEGORY));
@@ -509,7 +509,7 @@ public class RegistryProtocol implements Protocol {
             }
 
             this.configurators = Configurator.toConfigurators(classifyUrls(matchedUrls, UrlUtils::isConfigurator))
-                    .orElse(configurators); //配置重写的信息
+                    .orElse(configurators); //获取重写配置的信息
 
             doOverrideIfNecessary();
         }

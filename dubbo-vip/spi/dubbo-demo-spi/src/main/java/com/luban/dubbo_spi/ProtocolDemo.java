@@ -19,7 +19,7 @@ public class ProtocolDemo {
     public static void main(String[] args) {
         ExtensionLoader<Protocol> extensionLoader = ExtensionLoader.getExtensionLoader(Protocol.class);
 
-        extensionLoader.getAdaptiveExtension();
+        extensionLoader.getAdaptiveExtension();//获取代理类
 
         try {
             System.in.read();

@@ -76,7 +76,7 @@ public class MonitorFilter implements Filter {
             getConcurrent(invoker, invocation).incrementAndGet(); // count up
             try {
                 Result result = invoker.invoke(invocation); // proceed invocation chain
-                collect(invoker, invocation, result, remoteHost, start, false);
+                collect(invoker, invocation, result, remoteHost, start, false);//收集调用信息发送给监控中心
                 return result;
             } catch (RpcException e) {
                 collect(invoker, invocation, null, remoteHost, start, true);

@@ -13,7 +13,7 @@ import org.apache.dubbo.common.extension.Adaptive;
  * *************学海无涯苦作舟***************
  */
 @Adaptive
-public class AdaptiveCar implements Car {
+public class AdaptiveCar implements Car { //car的代理实现类
 
     @Override
     public void getColor() {
